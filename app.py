@@ -17,15 +17,16 @@ def load_data():
 
 df = load_data()
 
-# إحصائيات عامة
-total = len(df)
-male_count = int((df["الجنس"] == "ذكر").sum()) if "الجنس" in df.columns else 0
-female_count = int((df["الجنس"] == "أنثى").sum()) if "الجنس" in df.columns else 0
-nationalities = df["الجنسية"].unique().tolist()
-
 # صفحة الإحصائيات
 if page == "الإحصائيات":
+    # عبارة آخر تحديث
+    st.markdown("**آخر تحديث العاملين 28 مايو الساعة 5:30 عصراً**")
     st.title("📈 الإحصائيات العامة")
+    total = len(df)
+    male_count = int((df.get("الجنس") == "ذكر").sum())
+    female_count = int((df.get("الجنس") == "أنثى").sum())
+    nationalities = df["الجنسية"].unique().tolist()
+
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("👥 العدد الكلي", total)
     col2.metric("🧑‍🤝‍🧑 عدد الذكور", male_count)
@@ -33,13 +34,11 @@ if page == "الإحصائيات":
     col4.metric("🌍 عدد الجنسيات", len(nationalities))
 
     st.markdown("---")
-    # رسم دائري تفاعلي حسب الجنسية
     st.subheader("🎯 توزيع الأشخاص حسب الجنسية")
-    fig = px.pie(df, names="الجنسية", hole=0.4,
-                 color_discrete_sequence=px.colors.qualitative.Vivid)
-    selected = st.plotly_chart(fig, use_container_width=True)
+    fig1 = px.pie(df, names="الجنسية", hole=0.4, title="نسبة توزيع الجنسيات",
+                  color_discrete_sequence=px.colors.qualitative.Vivid)
+    st.plotly_chart(fig1, use_container_width=True)
 
-    # اختيار الجنسية عبر قائمة أو رسم تفاعلي
     selected_nationality = st.selectbox("أو اختر جنسية لعرض التفاصيل:", options=["كل الجنسيات"] + sorted(nationalities))
     if selected_nationality != "كل الجنسيات":
         filtered_df = df[df["الجنسية"] == selected_nationality]
