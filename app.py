@@ -41,18 +41,18 @@ if page == "الإحصائيات":
     tab1, tab2, tab3 = st.tabs(["الجنس", "الجنسيات", "العمر"])
 
     with tab1:
-        fig = px.pie(df, names="الجنس", title="نسبة الجنس")
+        fig = px.pie(df, names="الجنس", title="نسبة الجنس", color_discrete_sequence=px.colors.sequential.OrRd)
         st.plotly_chart(fig, use_container_width=True)
 
     with tab2:
         top_nationalities = df["الجنسية"].value_counts().nlargest(10).reset_index()
         top_nationalities.columns = ["الجنسية", "العدد"]
-        fig2 = px.bar(top_nationalities, x="الجنسية", y="العدد", title="أكثر 10 جنسيات")
+        fig2 = px.bar(top_nationalities, x="الجنسية", y="العدد", title="أكثر 10 جنسيات", color_discrete_sequence=px.colors.sequential.Oranges)
         st.plotly_chart(fig2, use_container_width=True)
 
     with tab3:
         if "العمر" in df.columns:
-            fig3 = px.histogram(df, x="العمر", nbins=20, title="توزيع الأعمار")
+            fig3 = px.histogram(df, x="العمر", nbins=20, title="توزيع الأعمار", color_discrete_sequence=px.colors.sequential.Reds)
             st.plotly_chart(fig3, use_container_width=True)
         else:
             st.info("📌 لا يوجد عمود باسم 'العمر' في البيانات")
@@ -68,7 +68,7 @@ st.markdown("""
         background-color: #f4f4f4;
     }
     .stApp {
-        background-image: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+        background-image: linear-gradient(to bottom, #0b3d0b, #1c1c1c);
         background-size: cover;
     }
     </style>
