@@ -46,7 +46,8 @@ if page == "الإحصائيات":
 
     with tab2:
         top_nationalities = df["الجنسية"].value_counts().nlargest(10).reset_index()
-        fig2 = px.bar(top_nationalities, x="index", y="الجنسية", title="أكثر 10 جنسيات")
+        top_nationalities.columns = ["الجنسية", "العدد"]
+        fig2 = px.bar(top_nationalities, x="الجنسية", y="العدد", title="أكثر 10 جنسيات")
         st.plotly_chart(fig2, use_container_width=True)
 
     with tab3:
