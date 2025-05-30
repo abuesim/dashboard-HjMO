@@ -6,7 +6,7 @@ st.set_page_config(page_title="لوحة التحكم المتقدمة", layout="
 
 # ----- شريط علوي -----
 st.markdown("""
-    <div style='background-color:#0d3b66;padding:10px 20px;border-radius:12px;margin-bottom:25px;'>
+    <div style='background-color:#000000;padding:10px 20px;border-radius:12px;margin-bottom:25px;'>
         <h2 style='color:white;margin:0;'>📅 الجمعة 30 مايو 1:30 ظهراً</h2>
     </div>
 """, unsafe_allow_html=True)
@@ -47,7 +47,7 @@ if page == "الإحصائيات":
     with tab2:
         top_nationalities = df["الجنسية"].value_counts().nlargest(10).reset_index()
         top_nationalities.columns = ["الجنسية", "العدد"]
-        fig2 = px.bar(top_nationalities, x="الجنسية", y="العدد", title="أكثر 10 جنسيات", color_discrete_sequence=px.colors.sequential.Oranges)
+        fig2 = px.bar(top_nationalities, x="الجنسية", y="العدد", title="أكثر 10 جنسيات", color_discrete_sequence=px.colors.sequential.OrRd)
         st.plotly_chart(fig2, use_container_width=True)
 
     with tab3:
@@ -68,7 +68,7 @@ st.markdown("""
         background-color: #f4f4f4;
     }
     .stApp {
-        background-image: linear-gradient(to bottom, #0b3d0b, #1c1c1c);
+        background-image: linear-gradient(to bottom, rgba(11, 61, 11, 0.7), rgba(28, 28, 28, 0.7));
         background-size: cover;
     }
     </style>
