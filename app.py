@@ -1,60 +1,74 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-st.set_page_config(page_title="لوحة البيانات التفاعلية", layout="wide")
+st.set_page_config(page_title="لوحة التحكم المتقدمة", layout="wide")
 
-# تحميل البيانات
-df = pd.read_csv("data.csv")
+# ----- شريط علوي -----
+st.markdown("""
+    <div style='background-color:#0d3b66;padding:10px 20px;border-radius:12px;margin-bottom:25px;'>
+        <h2 style='color:white;margin:0;'>📅 الجمعة 30 مايو 1:30 ظهراً</h2>
+    </div>
+""", unsafe_allow_html=True)
 
-# حذف رقم الجوال إن وجد
-if "جوال" in df.columns:
-    df = df.drop(columns=["جوال"])
+# ----- تحميل البيانات -----
+@st.cache_data
+def load_data():
+    return pd.read_csv("data.csv")
 
-st.title("📊 الخميس 29 مايو 3:30 عصرا	")
+df = load_data()
 
-# ===== بطاقات الإحصائيات =====
-col1, col2, col3 = st.columns(3)
-col1.metric("👥 العدد الكلي", len(df))
-col2.metric("🌍 عدد الجنسيات", df["الجنسية"].nunique())
+# ----- القائمة الجانبية -----
+st.sidebar.title("القائمة")
+page = st.sidebar.radio("اذهب إلى:", ["الإحصائيات", "التفاصيل"])
 
-if "الجنس" in df.columns:
-    عدد_الذكور = (df["الجنس"] == "ذكر").sum()
-    عدد_الإناث = (df["الجنس"] == "أنثى").sum()
-    
-    # عرض عدد الذكور في العمود الثالث
-    col3.metric("🧑‍🤝‍🧑 عدد الذكور", عدد_الذكور)
-    
-    # إنشاء صف جديد لعرض عدد الإناث
-    col4, _, col5 = st.columns([1, 0.2, 1])
-    col4.metric("👩 عدد الإناث", عدد_الإناث)
+if page == "الإحصائيات":
+    st.title("📊 الإحصائيات العامة")
 
-st.markdown("---")
+    # بطاقات رقمية
+    total = len(df)
+    male_count = int((df.get("الجنس") == "ذكر").sum())
+    female_count = int((df.get("الجنس") == "أنثى").sum())
+    nationalities = df["الجنسية"].nunique()
 
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("👥 العدد الكلي", total)
+    col2.metric("🧑 عدد الذكور", male_count)
+    col3.metric("👩 عدد الإناث", female_count)
+    col4.metric("🌍 عدد الجنسيات", nationalities)
 
+    # تبويبات بيانية
+    tab1, tab2, tab3 = st.tabs(["الجنس", "الجنسيات", "العمر"])
 
-# ===== الرسم الدائري لتوزيع الجنسيات =====
-st.subheader("🎯 توزيع الأشخاص حسب الجنسية (اضغط على أي جزء لرؤية التفاصيل)")
+    with tab1:
+        fig = px.pie(df, names="الجنس", title="نسبة الجنس")
+        st.plotly_chart(fig, use_container_width=True)
 
-fig = px.pie(df, names="الجنسية", title="نسبة توزيع الجنسيات", hole=0.4,
-             color_discrete_sequence=px.colors.qualitative.Set3)
-selected = st.plotly_chart(fig, use_container_width=True)
+    with tab2:
+        top_nationalities = df["الجنسية"].value_counts().nlargest(10).reset_index()
+        fig2 = px.bar(top_nationalities, x="index", y="الجنسية", title="أكثر 10 جنسيات")
+        st.plotly_chart(fig2, use_container_width=True)
 
-# ===== فلترة حسب الجنسية =====
-selected_nationality = st.selectbox("اختر الجنسية لعرض التفاصيل:", options=[""] + sorted(df["الجنسية"].unique()))
-if selected_nationality:
-    filtered_df = df[df["الجنسية"] == selected_nationality]
-    st.info(f"تم العثور على {len(filtered_df)} شخص من الجنسية: {selected_nationality}")
-    st.dataframe(filtered_df.reset_index(drop=True), use_container_width=True)
-else:
+    with tab3:
+        if "العمر" in df.columns:
+            fig3 = px.histogram(df, x="العمر", nbins=20, title="توزيع الأعمار")
+            st.plotly_chart(fig3, use_container_width=True)
+        else:
+            st.info("📌 لا يوجد عمود باسم 'العمر' في البيانات")
+
+elif page == "التفاصيل":
+    st.title("📋 التفاصيل الكاملة")
     st.dataframe(df, use_container_width=True)
 
-# ===== رسم بياني بالأعمدة حسب الجنس =====
-if "الجنس" in df.columns:
-    st.subheader("📈 توزيع حسب الجنس")
-    gender_counts = df["الجنس"].value_counts().reset_index()
-    gender_counts.columns = ["الجنس", "العدد"]
-    fig2 = px.bar(gender_counts, x="الجنس", y="العدد", color="الجنس",
-                  color_discrete_sequence=px.colors.sequential.Tealgrn)
-    st.plotly_chart(fig2, use_container_width=True)
+# ----- خلفية -----
+st.markdown("""
+    <style>
+    body {
+        background-color: #f4f4f4;
+    }
+    .stApp {
+        background-image: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+        background-size: cover;
+    }
+    </style>
+""", unsafe_allow_html=True)
