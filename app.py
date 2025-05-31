@@ -7,7 +7,7 @@ st.set_page_config(page_title="لوحة التحكم المتقدمة", layout="
 # ----- شريط علوي -----
 st.markdown("""
     <div style='background-color:#000000;padding:10px 20px;border-radius:12px;margin-bottom:25px;'>
-        <h2 style='color:white;margin:0;'>📅 الجمعة 30 مايو 1:30 ظهراً</h2>
+        <h2 style='color:white;margin:0;'>📅 السبت 31 مايو 11:30 ليلا</h2>
     </div>
 """, unsafe_allow_html=True)
 
