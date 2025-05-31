@@ -12,7 +12,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----- تحميل البيانات -----
-@st.cache_data
 def load_data():
     return pd.read_csv("data.csv")
 
@@ -20,6 +19,10 @@ df = load_data()
 
 # ----- القائمة الجانبية -----
 st.sidebar.title("القائمة")
+
+if st.sidebar.button("🔄 تحديث البيانات"):
+    st.experimental_rerun()
+
 page = st.sidebar.radio("اذهب إلى:", ["الإحصائيات", "التفاصيل"])
 
 if page == "الإحصائيات":
